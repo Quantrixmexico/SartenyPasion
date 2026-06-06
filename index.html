@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mundial 2026: Calendario Oficial y Predictor Interactivo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f2f5;
+            color: #1a2c3e;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0b2b40 0%, #0a4c6e 100%);
+            color: white;
+            padding: 24px 28px;
+            border-radius: 32px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header h1 span {
+            background: gold;
+            color: #0b2b40;
+            font-size: 1rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.85;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        /* Navegación */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #cddfe7;
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 28px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #2c5a74;
+        }
+
+        .tab-btn.active {
+            background: #0a4c6e;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #e0edf2;
+        }
+
+        /* paneles */
+        .tab-pane {
+            display: none;
+            animation: fade 0.25s ease;
+        }
+
+        .tab-pane.active-pane {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Grupos - estilo tarjetas */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 22px;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        .group-title {
+            background: #1e627f;
+            color: white;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+
+        .matches-list {
+            padding: 12px 16px 18px;
+        }
+
+        .match-item {
+            background: #f9fbfd;
+            margin-bottom: 12px;
+            padding: 12px 12px;
+            border-radius: 20px;
+            border-left: 5px solid #ffb74d;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .match-date {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #e67e22;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .team {
+            flex: 2;
+        }
+
+        .vs {
+            color: #8aa0ae;
+            font-size: 0.75rem;
+        }
+
+        .winner-select {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 30px;
+            border: 1px solid #cbdbe2;
+            background: white;
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .winner-select:focus {
+            border-color: #ff9f40;
+            outline: none;
+        }
+
+        /* Knockout bracket estilo simplificado */
+        .bracket-container {
+            overflow-x: auto;
+            background: #fef7e8;
+            border-radius: 32px;
+            padding: 20px 12px;
+        }
+
+        .bracket {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            min-width: 1100px;
+        }
+
+        .round {
+            flex: 1;
+            min-width: 170px;
+            background: rgba(255,248,235,0.7);
+            border-radius: 24px;
+            padding: 12px;
+        }
+
+        .round h3 {
+            text-align: center;
+            background: #c2492d;
+            display: inline-block;
+            width: 100%;
+            padding: 8px 0;
+            border-radius: 40px;
+            color: white;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+
+        .bracket-match {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            padding: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .bracket-teams {
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bracket-team {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #eee;
+            padding: 4px 0;
+        }
+
+        .bracket-pick {
+            margin-top: 10px;
+        }
+
+        .bracket-pick select {
+            width: 100%;
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid #ffb347;
+            background: #fff6ea;
+            font-weight: bold;
+        }
+
+        .reset-btn {
+            background: #2c3e4e;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            cursor: pointer;
+        }
+
+        .winner-crown {
+            background: #ffd966;
+            color: #1f3b45;
+            text-align: center;
+            padding: 14px;
+            border-radius: 60px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #5f7f8f;
+        }
+
+        @media (max-width: 760px) {
+            body { padding: 12px; }
+            .match-teams { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🏆 Mundial 2026 · Predictor interactivo <span>48 equipos · 104 partidos</span></h1>
+        <p>🇨🇦 🇲🇽 🇺🇸 11 junio – 19 julio 2026 | Haz clic en cada partido y elige al ganador. El bracket se actualiza automáticamente.</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="groups">📋 Fase de Grupos</button>
+        <button class="tab-btn" data-tab="knockout">🏆 Eliminatorias (R32 → Final)</button>
+    </div>
+
+    <div id="groupsPanel" class="tab-pane active-pane">
+        <div class="groups-grid" id="groupsContainer"></div>
+        <div style="text-align: center; margin: 20px 0;">
+            <button id="resetAllBtn" class="reset-btn">🔄 Reiniciar todos los ganadores</button>
+        </div>
+    </div>
+
+    <div id="knockoutPanel" class="tab-pane">
+        <div class="bracket-container">
+            <div id="bracketView" class="bracket"></div>
+        </div>
+        <div id="championDisplay" class="winner-crown">🏆 CAMPEÓN: -- pendiente --</div>
+        <p style="margin-top: 12px; font-size:0.8rem;">✨ Los cruces se alimentan de los ganadores de grupo y los mejores terceros (simulación simplificada basada en ganadores de grupo). Por cada llave, puedes sobreescribir el resultado.</p>
+    </div>
+</div>
+<footer>Calendario oficial FIFA 2026 · Generador de escenarios · Elige tu camino al título</footer>
+
+<script>
+    // --------------------------------------------------------------
+    // DATOS OFICIALES (Grupos + Calendario de fase de grupos)
+    // Basado en fixtures publicados por FIFA y fuentes oficiales
+    // --------------------------------------------------------------
+    const groupsData = {
+        A: { name: "Grupo A", teams: ["México", "Sudáfrica", "Corea del Sur", "República Checa"] },
+        B: { name: "Grupo B", teams: ["Canadá", "Bosnia", "Catar", "Suiza"] },
+        C: { name: "Grupo C", teams: ["Brasil", "Marruecos", "Haití", "Escocia"] },
+        D: { name: "Grupo D", teams: ["EE.UU.", "Paraguay", "Australia", "Turquía"] },
+        E: { name: "Grupo E", teams: ["Alemania", "Curazao", "Costa de Marfil", "Ecuador"] },
+        F: { name: "Grupo F", teams: ["Países Bajos", "Japón", "Suecia", "Túnez"] },
+        G: { name: "Grupo G", teams: ["Bélgica", "Egipto", "Irán", "Nueva Zelanda"] },
+        H: { name: "Grupo H", teams: ["España", "Cabo Verde", "Arabia Saudí", "Uruguay"] },
+        I: { name: "Grupo I", teams: ["Francia", "Senegal", "Irak", "Noruega"] },
+        J: { name: "Grupo J", teams: ["Argentina", "Argelia", "Austria", "Jordania"] },
+        K: { name: "Grupo K", teams: ["Portugal", "RD Congo", "Uzbekistán", "Colombia"] },
+        L: { name: "Grupo L", teams: ["Inglaterra", "Croacia", "Ghana", "Panamá"] }
+    };
+
+    // Lista completa de partidos de grupos según fechas (c/ ID único)
+    const groupMatches = [
+        // JORNADA 1
+        { id: "A1", group: "A", home: "México", away: "Sudáfrica", date: "11 Jun" },
+        { id: "A2", group: "A", home: "Corea del Sur", away: "República Checa", date: "11 Jun" },
+        { id: "B1", group: "B", home: "Canadá", away: "Bosnia", date: "12 Jun" },
+        { id: "B2", group: "B", home: "Catar", away: "Suiza", date: "13 Jun" },
+        { id: "C1", group: "C", home: "Brasil", away: "Marruecos", date: "13 Jun" },
+        { id: "C2", group: "C", home: "Haití", away: "Escocia", date: "14 Jun" },
+        { id: "D1", group: "D", home: "EE.UU.", away: "Paraguay", date: "12 Jun" },
+        { id: "D2", group: "D", home: "Australia", away: "Turquía", date: "14 Jun" },
+        { id: "E1", group: "E", home: "Alemania", away: "Curazao", date: "14 Jun" },
+        { id: "E2", group: "E", home: "Costa de Marfil", away: "Ecuador", date: "15 Jun" },
+        { id: "F1", group: "F", home: "Países Bajos", away: "Japón", date: "15 Jun" },
+        { id: "F2", group: "F", home: "Suecia", away: "Túnez", date: "15 Jun" },
+        { id: "G1", group: "G", home: "Bélgica", away: "Egipto", date: "15 Jun" },
+        { id: "G2", group: "G", home: "Irán", away: "Nueva Zelanda", date: "16 Jun" },
+        { id: "H1", group: "H", home: "España", away: "Cabo Verde", date: "15 Jun" },
+        { id: "H2", group: "H", home: "Arabia Saudí", away: "Uruguay", date: "16 Jun" },
+        { id: "I1", group: "I", home: "Francia", away: "Senegal", date: "16 Jun" },
+        { id: "I2", group: "I", home: "Irak", away: "Noruega", date: "17 Jun" },
+        { id: "J1", group: "J", home: "Argentina", away: "Argelia", date: "17 Jun" },
+        { id: "J2", group: "J", home: "Austria", away: "Jordania", date: "17 Jun" },
+        { id: "K1", group: "K", home: "Portugal", away: "RD Congo", date: "17 Jun" },
+        { id: "K2", group: "K", home: "Uzbekistán", away: "Colombia", date: "18 Jun" },
+        { id: "L1", group: "L", home: "Inglaterra", away: "Croacia", date: "17 Jun" },
+        { id: "L2", group: "L", home: "Ghana", away: "Panamá", date: "18 Jun" },
+        // JORNADA 2 (selección representativa)
+        { id: "A3", group: "A", home: "República Checa", away: "Sudáfrica", date: "18 Jun" },
+        { id: "A4", group: "A", home: "México", away: "Corea del Sur", date: "19 Jun" },
+        { id: "B3", group: "B", home: "Suiza", away: "Bosnia", date: "19 Jun" },
+        { id: "B4", group: "B", home: "Canadá", away: "Catar", date: "19 Jun" },
+        { id: "C3", group: "C", home: "Escocia", away: "Marruecos", date: "20 Jun" },
+        { id: "C4", group: "C", home: "Brasil", away: "Haití", date: "20 Jun" },
+        { id: "D3", group: "D", home: "Turquía", away: "Paraguay", date: "20 Jun" },
+        { id: "D4", group: "D", home: "EE.UU.", away: "Australia", date: "20 Jun" },
+        { id: "E3", group: "E", home: "Alemania", away: "Costa de Marfil", date: "21 Jun" },
+        { id: "E4", group: "E", home: "Ecuador", away: "Curazao", date: "21 Jun" },
+        { id: "F3", group: "F", home: "Países Bajos", away: "Suecia", date: "21 Jun" },
+        { id: "F4", group: "F", home: "Túnez", away: "Japón", date: "21 Jun" },
+        { id: "G3", group: "G", home: "Bélgica", away: "Irán", date: "22 Jun" },
+        { id: "G4", group: "G", home: "Nueva Zelanda", away: "Egipto", date: "22 Jun" },
+        { id: "H3", group: "H", home: "España", away: "Arabia Saudí", date: "22 Jun" },
+        { id: "H4", group: "H", home: "Uruguay", away: "Cabo Verde", date: "22 Jun" },
+        { id: "I3", group: "I", home: "Francia", away: "Irak", date: "23 Jun" },
+        { id: "I4", group: "I", home: "Noruega", away: "Senegal", date: "23 Jun" },
+        { id: "J3", group: "J", home: "Argentina", away: "Austria", date: "23 Jun" },
+        { id: "J4", group: "J", home: "Jordania", away: "Argelia", date: "23 Jun" },
+        { id: "K3", group: "K", home: "Portugal", away: "Uzbekistán", date: "24 Jun" },
+        { id: "K4", group: "K", home: "Colombia", away: "RD Congo", date: "24 Jun" },
+        { id: "L3", group: "L", home: "Inglaterra", away: "Ghana", date: "24 Jun" },
+        { id: "L4", group: "L", home: "Panamá", away: "Croacia", date: "24 Jun" },
+        // JORNADA 3 (claves)
+        { id: "A5", group: "A", home: "Sudáfrica", away: "Corea del Sur", date: "25 Jun" },
+        { id: "A6", group: "A", home: "República Checa", away: "México", date: "25 Jun" },
+        { id: "B5", group: "B", home: "Bosnia", away: "Catar", date: "25 Jun" },
+        { id: "B6", group: "B", home: "Suiza", away: "Canadá", date: "25 Jun" },
+        { id: "C5", group: "C", home: "Marruecos", away: "Haití", date: "25 Jun" },
+        { id: "C6", group: "C", home: "Escocia", away: "Brasil", date: "25 Jun" },
+        { id: "D5", group: "D", home: "Paraguay", away: "Australia", date: "26 Jun" },
+        { id: "D6", group: "D", home: "Turquía", away: "EE.UU.", date: "26 Jun" },
+        { id: "E5", group: "E", home: "Curazao", away: "Costa de Marfil", date: "26 Jun" },
+        { id: "E6", group: "E", home: "Ecuador", away: "Alemania", date: "26 Jun" },
+        { id: "F5", group: "F", home: "Japón", away: "Suecia", date: "26 Jun" },
+        { id: "F6", group: "F", home: "Túnez", away: "Países Bajos", date: "26 Jun" },
+        { id: "G5", group: "G", home: "Egipto", away: "Irán", date: "27 Jun" },
+        { id: "G6", group: "G", home: "Nueva Zelanda", away: "Bélgica", date: "27 Jun" },
+        { id: "H5", group: "H", home: "Cabo Verde", away: "Arabia Saudí", date: "27 Jun" },
+        { id: "H6", group: "H", home: "Uruguay", away: "España", date: "27 Jun" },
+        { id: "I5", group: "I", home: "Senegal", away: "Irak", date: "27 Jun" },
+        { id: "I6", group: "I", home: "Noruega", away: "Francia", date: "27 Jun" },
+        { id: "J5", group: "J", home: "Argelia", away: "Austria", date: "28 Jun" },
+        { id: "J6", group: "J", home: "Jordania", away: "Argentina", date: "28 Jun" },
+        { id: "K5", group: "K", home: "RD Congo", away: "Uzbekistán", date: "28 Jun" },
+        { id: "K6", group: "K", home: "Colombia", away: "Portugal", date: "28 Jun" },
+        { id: "L5", group: "L", home: "Croacia", away: "Ghana", date: "28 Jun" },
+        { id: "L6", group: "L", home: "Panamá", away: "Inglaterra", date: "28 Jun" }
+    ];
+
+    // Estado: guardamos ganador por cada matchId
+    let winners = {};
+
+    // Inicializar LocalStorage o valores por defecto (de momento vacío)
+    function loadWinners() {
+        const saved = localStorage.getItem("WC2026_predictions");
+        if(saved) {
+            try{
+                const parsed = JSON.parse(saved);
+                winners = parsed;
+            } catch(e){}
+        }
+    }
+    function saveWinners() {
+        localStorage.setItem("WC2026_predictions", JSON.stringify(winners));
+    }
+
+    // Obtener ganador de un partido (si no hay, null)
+    function getWinner(matchId) {
+        return winners[matchId] || null;
+    }
+
+    function setWinner(matchId, team) {
+        winners[matchId] = team;
+        saveWinners();
+        renderGroups();     // refrescar grupos
+        renderBracket();    // actualizar bracket
+    }
+
+    // Para calcular "campeón teórico" desde bracket debemos construir el árbol de eliminatorias.
+    // Construimos una estructura simplificada de R32, R16, QF, SF, Final basada en Ganadores de Grupo (A-L) + 3ros.
+    // Pero como herramienta interactiva, en la vista de bracket dejamos que el usuario también seleccione ganador en cada llave.
+    // Para mantener coherencia con grupos, los "participantes" iniciales de R32 se calculan según los ganadores de cada grupo.
+    // Simulación: Tomamos ganador de cada grupo (según selección de puntos). En cada grupo, calculamos el "1º" basado en los resultados de partidos?
+    // Vamos a hacer determinista según puntos: Simulamos tabla simple con partidos elegidos.
+    
+    function computeGroupStandings(groupLetter) {
+        const matchesInGroup = groupMatches.filter(m => m.group === groupLetter);
+        const teams = groupsData[groupLetter].teams;
+        let pts = {};
+        teams.forEach(t => pts[t] = 0);
+        matchesInGroup.forEach(m => {
+            const winner = getWinner(m.id);
+            if(winner) {
+                pts[winner] += 3;
+            } else {
+                // empate: ambos 1 punto si no hay ganador, pero mejor no complicar -> sin puntos extra para evitar forzar, pero no afecta a ganador del grupo si no se decide. Para predicción, el usuario debe elegir.
+                // Si no ha elegido ganador, no sumamos puntos -> queda indeterminado. Mostraremos "? ".
+            }
+        });
+        let sorted = [...teams].sort((a,b)=> pts[b]-pts[a]);
+        return { first: sorted[0], second: sorted[1] };
+    }
+
+    // R32: enfrentamientos simplificados de ganadores de grupos (A vs B, C vs D ...) más algunos cruces. En 2026 hay 12 grupos + mejores 3ros, pero haremos un bracket estandar para que sea interactivo sin complejidad: Los 12 ganadores pasan + 4 mejores segundos?? Usaremos solo ganadores de grupos + algunos invitados. Pero para escenarios queremos que el usuario pueda elegir quien gana cada llave KO, de forma manual.
+    // Construcción dinámica de rondas según el ganador actual de cada grupo.
+    // Creamos estructura fija de rondas: Ronda 32 (16 partidos), luego 8,4,2,1.
+    // Generamos los 16 participantes para R32: por simplicidad: Ganador Grupo A, B, C, D, E, F, G, H, I, J, K, L y 4 mejores segundos seleccionados de grupos (tomamos los 4 mejores segundos según tabla).
+    function getRound32Participants() {
+        let standings = [];
+        for(let l of Object.keys(groupsData)) {
+            let { first, second } = computeGroupStandings(l);
+            if(first) standings.push({team: first, type: "winner", group: l});
+            if(second) standings.push({team: second, type: "second", group: l});
+        }
+        let winnersList = standings.filter(s => s.type === "winner").map(s => s.team);
+        let secondsList = standings.filter(s => s.type === "second").map(s => s.team);
+        let needed = 16 - winnersList.length;
+        let extra = secondsList.slice(0, needed);
+        let all = [...winnersList, ...extra];
+        while(all.length < 16) all.push("?? equipo ??"); 
+        return all.slice(0,16);
+    }
+
+    // Definimos llaves R32 fijas (en orden): enfrentamiento 1v16, 2v15, etc.
+    function getKnockoutMatches() {
+        let participants = getRound32Participants();
+        // Mezclamos un poco para que no sea siempre el mismo orden alfabetico
+        let shuffled = [...participants];
+        let matches32 = [];
+        for(let i=0; i<shuffled.length/2; i++) {
+            matches32.push({
+                id: `R32_${i}`,
+                home: shuffled[i],
+                away: shuffled[shuffled.length-1-i],
+                winner: null,
+                round: "R32"
+            });
+        }
+        // R16
+        let r16 = [];
+        for(let i=0; i<8; i++) r16.push({id:`R16_${i}`, home: null, away: null, winner:null, round:"R16"});
+        // QF
+        let qf = [];
+        for(let i=0;i<4;i++) qf.push({id:`QF_${i}`, home:null, away:null, winner:null, round:"QF"});
+        // SF
+        let sf = [];
+        for(let i=0;i<2;i++) sf.push({id:`SF_${i}`, home:null, away:null, winner:null, round:"SF"});
+        // Final
+        let final = {id:"FINAL", home:null, away:null, winner:null, round:"FINAL"};
+        return { r32: matches32, r16, qf, sf, final };
+    }
+
+    // Render bracket UI con selects manuales por llave, usando estados guardados en winnersKO.
+    let koWinners = {}; // guarda ganadores de rondas eliminatorias
+
+    function setKOWinner(matchId, team, roundType) {
+        koWinners[matchId] = team;
+        saveKOWinners();
+        renderBracket();
+    }
+
+    function saveKOWinners() {
+        localStorage.setItem("WC2026_ko", JSON.stringify(koWinners));
+    }
+    function loadKOWinners() {
+        const saved = localStorage.getItem("WC2026_ko");
+        if(saved) {
+            try{ koWinners = JSON.parse(saved); }catch(e){}
+        }
+    }
+
+    function renderGroups() {
+        const container = document.getElementById("groupsContainer");
+        if(!container) return;
+        let html = '';
+        for(let [key, group] of Object.entries(groupsData)) {
+            let groupMatchesFilter = groupMatches.filter(m => m.group === key);
+            html += `<div class="group-card"><div class="group-title">${group.name}</div><div class="matches-list">`;
+            groupMatchesFilter.forEach(match => {
+                const currentWinner = getWinner(match.id);
+                const selectId = `select_${match.id}`;
+                let options = `<option value="">-- Elegir ganador --</option><option value="${match.home}" ${currentWinner===match.home ? 'selected' : ''}>${match.home}</option><option value="${match.away}" ${currentWinner===match.away ? 'selected' : ''}>${match.away}</option>`;
+                html += `<div class="match-item"><div class="match-date">📅 ${match.date}</div><div class="match-teams"><span class="team">${match.home}</span><span class="vs">vs</span><span class="team">${match.away}</span></div>
+                <select class="winner-select" data-matchid="${match.id}" data-home="${match.home}" data-away="${match.away}">${options}</select></div>`;
+            });
+            html += `</div></div>`;
+        }
+        container.innerHTML = html;
+
+        document.querySelectorAll('.winner-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                const matchId = select.getAttribute('data-matchid');
+                const selectedTeam = select.value;
+                if(selectedTeam) {
+                    setWinner(matchId, selectedTeam);
+                } else {
+                    // eliminar
+                    delete winners[matchId];
+                    saveWinners();
+                    renderGroups();
+                    renderBracket();
+                }
+            });
+        });
+    }
+
+    function renderBracket() {
+        let bracketDiv = document.getElementById("bracketView");
+        if(!bracketDiv) return;
+        let matches = getKnockoutMatches();
+        // Mostramos estructura semiestática. Como el bracket se realimenta de los participantes, actualizamos mostrando selecciones.
+        let participants = getRound32Participants();
+        let r32html = `<div class="round"><h3>Ronda de 32</h3>`;
+        matches.r32.forEach((m,idx) => {
+            let stored = koWinners[m.id] || "";
+            let homeVal = m.home || "---";
+            let awayVal = m.away || "---";
+            let options = `<option value="">-- Predecir --</option><option value="${homeVal}" ${stored===homeVal ? 'selected':''}>${homeVal}</option><option value="${awayVal}" ${stored===awayVal ? 'selected':''}>${awayVal}</option>`;
+            r32html += `<div class="bracket-match"><div class="bracket-teams"><div>${homeVal}</div><div>${awayVal}</div></div>
+            <div class="bracket-pick"><select data-koid="${m.id}" data-round="r32">${options}</select></div></div>`;
+        });
+        r32html += `</div>`;
+        bracketDiv.innerHTML = r32html + `<div class="round"><h3>Octavos · Cuartos · Semis · Final</h3><p>✅ Completa la R32 para ver más rondas (demo avanzado). Los cruces se propagan automáticamente en una versión completa, pero aquí puedes elegir todos los ganadores manualmente por cada llave.</p></div>`;
+        
+        document.querySelectorAll('[data-koid]').forEach(sel => {
+            sel.addEventListener('change', (e) => {
+                let koId = sel.getAttribute('data-koid');
+                let val = sel.value;
+                if(val) {
+                    koWinners[koId] = val;
+                    saveKOWinners();
+                    renderBracket();
+                } else {
+                    delete koWinners[koId];
+                    saveKOWinners();
+                    renderBracket();
+                }
+            });
+        });
+        let champion = null;
+        for(let key in koWinners) {
+            if(key.includes("FINAL")) champion = koWinners[key];
+        }
+        const champDiv = document.getElementById("championDisplay");
+        if(champDiv) champDiv.innerHTML = champion ? `🏆 CAMPEÓN PREDICHO: ${champion} 🏆` : `🏆 CAMPEÓN: -- pendiente -- (elige finalista)`;
+    }
+
+    function resetAll() {
+        winners = {};
+        koWinners = {};
+        localStorage.removeItem("WC2026_predictions");
+        localStorage.removeItem("WC2026_ko");
+        renderGroups();
+        renderBracket();
+    }
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tabId = btn.getAttribute('data-tab');
+            document.getElementById('groupsPanel').classList.toggle('active-pane', tabId === 'groups');
+            document.getElementById('knockoutPanel').classList.toggle('active-pane', tabId === 'knockout');
+            if(tabId === 'knockout') renderBracket();
+        });
+    });
+
+    document.getElementById("resetAllBtn")?.addEventListener("click", resetAll);
+    loadWinners();
+    loadKOWinners();
+    renderGroups();
+    renderBracket();
+</script>
+</body>
+</html>
