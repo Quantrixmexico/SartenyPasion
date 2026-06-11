@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Matriz comparativa — Sartén & Pasión vs Soft Restaurant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F5EDE0; --bg-2:#EFE4D2; --surface:#FBF6E9; --surface-2:#F2E7D2;
+    --border:#DCC8A8; --border-2:#C4AC85;
+    --ink:#1A0E0A; --ink-2:#3D2A22; --muted:#7A6655; --faint:#A89378;
+    --accent:#A02C24; --accent-soft:#F2D8CF;
+    --pos:#5A7A40; --pos-soft:#DDE9C8;
+    --warn:#C16018; --warn-soft:#F3DEC0;
+    --neg:#B0533C; --neg-soft:#F0DBD0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Geist',system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, #FBF3E4 0%, transparent 60%),
+      var(--bg);
+    color:var(--ink); font-size:14px; line-height:1.45;
+    -webkit-font-smoothing:antialiased; letter-spacing:-0.005em;
+    padding:48px 28px 80px;
+  }
+  .serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-0.01em;}
+  .num{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+  .sheet{max-width:1120px;margin:0 auto;}
+
+  /* ---- HEADER ---- */
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;
+    padding-bottom:22px;border-bottom:1px solid var(--border);}
+  .eyebrow{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);font-weight:600;}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:46px;line-height:1.02;margin:10px 0 8px;letter-spacing:-0.02em;}
+  .sub{color:var(--muted);font-size:14.5px;max-width:560px;}
+  .stamp{text-align:right;flex-shrink:0;}
+  .stamp .mark{display:inline-flex;align-items:center;gap:9px;}
+  .mark-badge{width:34px;height:34px;border-radius:9px;background:var(--accent);color:var(--bg);
+    display:grid;place-items:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:24px;}
+  .mark-name{font-family:'Instrument Serif',serif;font-size:20px;line-height:1;}
+  .mark-meta{font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;}
+  .stamp .date{font-size:11.5px;color:var(--faint);margin-top:14px;}
+
+  /* ---- LEGEND + COLUMN HEADER ---- */
+  .legend{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:20px 0 18px;font-size:12px;color:var(--muted);}
+  .legend .lg{display:inline-flex;align-items:center;gap:7px;}
+  .dot{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;flex-shrink:0;}
+  .dot.full{background:var(--pos-soft);color:var(--pos);}
+  .dot.part{background:var(--warn-soft);color:var(--warn);}
+  .dot.none{background:var(--neg-soft);color:var(--neg);}
+
+  /* ---- TABLE ---- */
+  .matrix{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 30px 60px -38px rgba(60,20,0,.28);}
+  .row{display:grid;grid-template-columns:1fr 300px 300px;align-items:stretch;}
+  .colhead{position:sticky;top:0;z-index:2;background:var(--surface-2);border-bottom:1px solid var(--border-2);}
+  .colhead .cell{padding:14px 20px;}
+  .colhead .cap{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+  .colhead .vendor{display:flex;flex-direction:column;gap:2px;}
+  .colhead .vendor .vn{font-family:'Instrument Serif',serif;font-size:21px;line-height:1;}
+  .colhead .vendor .vt{font-size:11px;color:var(--muted);}
+  .colhead .ours{border-left:1px solid var(--border);}
+  .colhead .ours .vn{color:var(--accent);}
+  .colhead .theirs{border-left:1px solid var(--border);}
+
+  .section-row .cell{background:var(--bg-2);padding:9px 20px;grid-column:1 / -1;
+    font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600;
+    border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .section-row .cell .ix{font-family:'JetBrains Mono',monospace;color:var(--faint);font-weight:500;}
+
+  .feat-row{border-top:1px solid var(--border);}
+  .feat-row:hover{background:var(--surface-2);}
+  .feat-row .cell{padding:13px 20px;}
+  .feat-row .name{display:flex;flex-direction:column;gap:2px;}
+  .feat-row .name b{font-weight:600;font-size:13.5px;}
+  .feat-row .name span{font-size:11.5px;color:var(--muted);line-height:1.35;}
+  .feat-row .stat{border-left:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;}
+  .feat-row .stat .txt{font-size:12px;color:var(--ink-2);line-height:1.35;padding-top:0px;}
+  .feat-row .stat .lbl{display:block;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;margin-bottom:1px;}
+  .lbl.full{color:var(--pos);} .lbl.part{color:var(--warn);} .lbl.none{color:var(--neg);}
+
+  /* ---- VERDICT ---- */
+  .verdict{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;}
+  .vcard{border:1px solid var(--border);border-radius:14px;padding:20px 22px;background:var(--surface);}
+  .vcard.ours{background:linear-gradient(180deg,#FBF1E2,#FBF6E9);border-color:var(--border-2);}
+  .vcard h3{margin:0 0 4px;font-family:'Instrument Serif',serif;font-weight:400;font-size:22px;}
+  .vcard .tag{font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;color:var(--accent);}
+  .vcard p{margin:8px 0 0;font-size:13px;color:var(--ink-2);line-height:1.5;}
+  .vcard ul{margin:10px 0 0;padding-left:0;list-style:none;}
+  .vcard li{font-size:12.5px;color:var(--ink-2);padding:4px 0 4px 20px;position:relative;line-height:1.4;}
+  .vcard li::before{content:'';position:absolute;left:2px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+  .takeaway{margin-top:16px;border:1px solid var(--border-2);border-radius:14px;padding:20px 24px;
+    background:linear-gradient(120deg,#3A1714,#5A211C);color:#F5E7DC;}
+  .takeaway .tag{font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#E9B79B;font-weight:600;}
+  .takeaway p{margin:8px 0 0;font-size:14.5px;line-height:1.55;}
+  .takeaway b{color:#fff;}
+
+  .foot{margin-top:26px;display:flex;justify-content:space-between;font-size:11px;color:var(--faint);}
+
+  @media (max-width:880px){
+    .row{grid-template-columns:1fr;}
+    .feat-row .stat,.colhead .ours,.colhead .theirs{border-left:0;border-top:1px solid var(--border);}
+    .verdict{grid-template-columns:1fr;}
+  }
+  @media print{
+    body{padding:0;background:#fff;}
+    .feat-row:hover{background:none;}
+    .matrix,.vcard,.takeaway{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="head">
+    <div>
+      <div class="eyebrow">Análisis competitivo · Plataforma de gestión</div>
+      <h1>Matriz comparativa de capacidades</h1>
+      <p class="sub">Nuestro desarrollo frente a Soft Restaurant, capacidad por capacidad. Evalúa cobertura funcional y profundidad real en operación, no solo presencia de pantalla.</p>
+    </div>
+    <div class="stamp">
+      <div class="mark">
+        <div class="mark-badge serif">S</div>
+        <div>
+          <div class="mark-name">Sartén &amp; Pasión</div>
+          <div class="mark-meta">Cocina mexicana · Tijuana</div>
+        </div>
+      </div>
+      <div class="date num">Rev. 06 jun 2026 · v1</div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="lg"><span class="dot full">✓</span> Sólido / módulo dedicado</span>
+    <span class="lg"><span class="dot part">◐</span> Parcial / prototipo / complemento</span>
+    <span class="lg"><span class="dot none">–</span> Ausente o no es su foco</span>
+    <span class="lg" style="margin-left:auto;color:var(--faint);">Lectura: nuestra app es un prototipo de UI; Soft Restaurant es producto en producción.</span>
+  </div>
+
+  <div class="matrix">
+    <!-- COLUMN HEADER -->
+    <div class="row colhead">
+      <div class="cell"><div class="cap">Capacidad</div></div>
+      <div class="cell ours"><div class="vendor"><span class="vn">Sartén &amp; Pasión</span><span class="vt">Nuestro desarrollo</span></div></div>
+      <div class="cell theirs"><div class="vendor"><span class="vn">Soft Restaurant</span><span class="vt">National Soft · ~20 años</span></div></div>
+    </div>
+
+    <!-- 01 OPERACIÓN DE PISO -->
+    <div class="row section-row"><div class="cell"><span class="ix">01</span> Operación de piso &amp; caja</div></div>
+
+    <div class="row feat-row">
+      <div class="cell name"><b>POS / comandas</b><span>Toma de orden, envío a cocina, cobro</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Pantalla diseñada, sin transaccional real</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Núcleo del producto, probado a escala</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Mapa de mesas / transferencias</b><span>Plano, unir/mover, estados</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Mapa visual, falta lógica de transferencia</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Completo con meseros y áreas</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>División de cuenta · propinas · cortesías</b><span>Split, descuentos con autorización</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>No contemplado aún</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Manejo fino, estándar del rubro</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Cortes de caja X/Z · turno de cajero</b><span>Arqueo, retiros, cierre de turno</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>Sin gestión de caja por turno</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Auditable y consolidado</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Modo offline / continuidad</b><span>Cobrar sin internet, sincronizar después</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>Dependiente de conexión (web)</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Desktop local, resiliente</span></div>
+    </div>
+
+    <!-- 02 COCINA Y CANALES -->
+    <div class="row section-row"><div class="cell"><span class="ix">02</span> Cocina &amp; canales de venta</div></div>
+
+    <div class="row feat-row">
+      <div class="cell name"><b>KDS / pantalla de cocina</b><span>Tickets, tiempos, bumping</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo dedicado de origen</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Disponible como complemento extra</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Ventas por canal / delivery</b><span>Salón, para llevar, agregadores</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Vista omnicanal de origen</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Domicilios sí; agregadores limitado</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Reportes de venta</b><span>Por producto, hora, mesero, canal</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Cubierto</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Amplio catálogo de reportes</span></div>
+    </div>
+
+    <!-- 03 INVENTARIO Y COSTOS -->
+    <div class="row section-row"><div class="cell"><span class="ix">03</span> Inventario, recetas &amp; costos</div></div>
+
+    <div class="row feat-row">
+      <div class="cell name"><b>Inventario · entradas / salidas</b><span>Existencias, movimientos, ajustes</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo + caducidades</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Maduro</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Recetas / escandallos</b><span>Costo teórico por platillo</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Menú y recetas dedicado</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Estándar del producto</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Control de costos / food cost</b><span>Teórico vs real, márgenes</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo ejecutivo dedicado</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Vía reportes, menos accionable</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Caducidades / mermas</b><span>Lotes, vencimientos, desperdicio</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo propio con alertas</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Débil en caducidad por lote</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Compras · recepción · catálogo</b><span>Órdenes, recibo, mercancías</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Recibir compra + catálogo</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Compras y proveedores</span></div>
+    </div>
+
+    <!-- 04 FINANZAS Y FISCAL -->
+    <div class="row section-row"><div class="cell"><span class="ix">04</span> Finanzas &amp; fiscal (CFDI)</div></div>
+
+    <div class="row feat-row">
+      <div class="cell name"><b>Facturación CFDI 4.0 / timbrado</b><span>Conexión a PAC, certificación SAT</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>UI de facturación; falta timbrado real</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Timbrado certificado en producción</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Complementos de pago · carta porte · addendas</b><span>Cumplimiento fiscal avanzado</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>No contemplado</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Soportado</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Cuentas por pagar / proveedores</b><span>Saldos, programación de pagos</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Pagar proveedor + saldos</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Cubierto</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Conciliación bancaria</b><span>Cruce de movimientos vs banco</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo propio — diferenciador</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>Fuera de alcance (es POS)</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Nómina / cálculo de pago</b><span>Correr nómina, recibos</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo propio — diferenciador</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>Se integra con terceros</span></div>
+    </div>
+
+    <!-- 05 GOBERNANZA -->
+    <div class="row section-row"><div class="cell"><span class="ix">05</span> Gobernanza &amp; capa ejecutiva</div></div>
+
+    <div class="row feat-row">
+      <div class="cell name"><b>Dashboard &amp; reportes ejecutivos</b><span>KPIs para dueño/dirección</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Eje del producto</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Reportes operativos, no ejecutivos</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Aprobaciones / flujos de autorización</b><span>Compras, gastos, descuentos</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo propio — diferenciador</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>No existe</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Reporte a socios</b><span>Transparencia para inversionistas</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulo propio — diferenciador</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>No es su enfoque</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Multi-sucursal / consolidación</b><span>Catálogo central, sync entre tiendas</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>No evidente en la arquitectura</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Versiones Network / Enterprise</span></div>
+    </div>
+
+    <!-- 06 EQUIPO Y PLATAFORMA -->
+    <div class="row section-row"><div class="cell"><span class="ix">06</span> Equipo, plataforma &amp; madurez</div></div>
+
+    <div class="row feat-row">
+      <div class="cell name"><b>Colaboradores · horarios · turnos</b><span>Gestión de personal y RH ligero</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Módulos dedicados</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Empleados básico</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Perfiles y permisos</b><span>Roles, accesos por módulo</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Cubierto</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Cubierto</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Hardware / periféricos</b><span>Impresoras, básculas, cajón, terminal</span></div>
+      <div class="cell stat"><span class="dot none">–</span><span class="txt"><span class="lbl none">Ausente</span>Sin capa de hardware aún</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Amplio soporte certificado</span></div>
+    </div>
+    <div class="row feat-row">
+      <div class="cell name"><b>Plataforma &amp; madurez en producción</b><span>Web vs desktop, años en mercado</span></div>
+      <div class="cell stat"><span class="dot part">◐</span><span class="txt"><span class="lbl part">Parcial</span>Web moderno, aún prototipo</span></div>
+      <div class="cell stat"><span class="dot full">✓</span><span class="txt"><span class="lbl full">Sólido</span>Desktop probado a gran escala</span></div>
+    </div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="verdict">
+    <div class="vcard ours">
+      <div class="tag">Nuestra ventaja</div>
+      <h3>Control financiero &amp; gobernanza</h3>
+      <p>Resolvemos el problema del <b>dueño e inversionista</b>, no solo el de la caja. Ahí Soft Restaurant no juega.</p>
+      <ul>
+        <li>Aprobaciones y reporte a socios</li>
+        <li>Conciliación bancaria y nómina integradas</li>
+        <li>Costos, food cost y mermas accionables</li>
+        <li>Capa ejecutiva nativa, no atornillada</li>
+      </ul>
+    </div>
+    <div class="vcard">
+      <div class="tag">Su ventaja</div>
+      <h3>Operación probada en piso</h3>
+      <p>20 años de músculo donde un restaurante no perdona errores.</p>
+      <ul>
+        <li>CFDI 4.0 certificado y complementos</li>
+        <li>Hardware y periféricos de serie</li>
+        <li>Caja: split, propinas, cortes X/Z</li>
+        <li>Modo offline y multi-sucursal real</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <div class="tag">Recomendación estratégica</div>
+    <p>No competir como “otro POS”. Posicionarnos como la <b>capa de control financiero y de costos para grupos restauranteros</b> e <b>integrar</b> el POS (incluso conectándonos a las exportaciones de Soft Restaurant) en lugar de reconstruir la caja desde cero. Nuestro foso está en Aprobaciones, Socios, Costos y Mermas — no en cobrar mesas.</p>
+  </div>
+
+  <div class="foot">
+    <span>Sartén &amp; Pasión · Análisis competitivo interno</span>
+    <span class="num">Confidencial — uso para dirección y socios</span>
+  </div>
+
+</div>
+</body>
+</html>
